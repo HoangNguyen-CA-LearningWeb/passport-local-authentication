@@ -2,13 +2,13 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 
 require('dotenv').config();
 
 const port = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/test';
-
-app.use(express.json());
 
 mongoose
   .connect(MONGODB_URI, {
@@ -22,6 +22,21 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  session({
+    secret: 'not a good secret',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: MONGODB_URI }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // Equal to 1 day
+    },
+  })
+);
 
 app.use('/api/test', require('./routes/api/test'));
 

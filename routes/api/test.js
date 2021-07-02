@@ -6,8 +6,13 @@ const AppError = require('../../AppError');
 router.get(
   '/',
   wrapAsync(async (req, res) => {
-    throw new AppError(400, 'hello world');
-    res.send('hello world');
+    if (req.session.visits) {
+      req.session.visits++;
+    } else {
+      req.session.visits = 1;
+    }
+    console.log(req.session);
+    res.send(req.session);
   })
 );
 
