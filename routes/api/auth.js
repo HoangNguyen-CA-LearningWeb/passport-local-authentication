@@ -12,4 +12,8 @@ router.post(
   })
 );
 
+router.get('/', (req, res) => {
+  res.send('hello this is the auth route.');
+});
+
 module.exports = router;
