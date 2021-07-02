@@ -4,6 +4,7 @@ const app = express();
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const passport = require('passport');
 
 require('dotenv').config();
 
@@ -38,7 +39,13 @@ app.use(
   })
 );
 
+require('./passport');
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/api/test', require('./routes/api/test'));
+app.use('/api/users', require('./routes/api/users'));
 
 if (process.env.NODE_ENV === 'production') {
   // Set static folder
