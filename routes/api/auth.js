@@ -8,12 +8,13 @@ router.post(
   '/',
   passport.authenticate('local'),
   wrapAsync(async (req, res) => {
+    console.log(req.user);
     res.send(req.user);
   })
 );
 
 router.get('/', (req, res) => {
-  res.send('hello this is the auth route.');
+  res.json(req.session);
 });
 
 module.exports = router;
