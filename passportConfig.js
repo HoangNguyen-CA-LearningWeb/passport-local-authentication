@@ -7,15 +7,11 @@ passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
       const user = await User.findOne({ username: username });
-      if (!user) {
-        return done(null, false, { message: 'No user by that email' });
-      }
+      if (!user) return done(null, false, { message: 'User does not exist.' });
 
       const isValid = await validPassword(password, user.password);
-      console.log(isValid);
-      if (!isValid) {
-        return done(null, false, { message: 'Wrong password' });
-      }
+      if (!isValid)
+        return done(null, false, { message: 'Invalid password provided.' });
 
       user.password = undefined; // remove password to send to user
       return done(null, user);
@@ -27,7 +23,6 @@ passport.use(
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
-  console.log;
 });
 
 passport.deserializeUser(async (id, done) => {
