@@ -39,7 +39,7 @@ app.use(
   })
 );
 
-require('./passport');
+require('./passportConfig');
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -58,7 +58,6 @@ if (process.env.NODE_ENV === 'production') {
 
 //custom error handler
 app.use((err, req, res, next) => {
-  console.log(err.message);
   const { status = 500, message = 'Something Went Wrong!' } = err;
   res.status(status).json({ status, error: message });
 });

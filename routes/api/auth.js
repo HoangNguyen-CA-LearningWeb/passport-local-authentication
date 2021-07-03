@@ -3,18 +3,18 @@ const router = express.Router();
 const { wrapAsync } = require('../../util');
 const passport = require('passport');
 const AppError = require('../../AppError');
+const { isAuth } = require('../../middleware');
 
 router.post(
   '/',
   passport.authenticate('local'),
   wrapAsync(async (req, res) => {
-    console.log(req.user);
-    res.send(req.user);
+    res.json(req.user);
   })
 );
 
-router.get('/', (req, res) => {
-  res.json(req.session);
+router.get('/', isAuth, (req, res) => {
+  res.json(req.user);
 });
 
 module.exports = router;

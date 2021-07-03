@@ -12,9 +12,12 @@ passport.use(
       }
 
       const isValid = await validPassword(password, user.password);
+      console.log(isValid);
       if (!isValid) {
         return done(null, false, { message: 'Wrong password' });
       }
+
+      user.password = undefined; // remove password to send to user
       return done(null, user);
     } catch (err) {
       return done(err);
@@ -24,11 +27,12 @@ passport.use(
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
+  console.log;
 });
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = User.findById(id);
+    const user = await User.findById(id).select('-password');
     done(null, user);
   } catch (err) {
     done(err);
