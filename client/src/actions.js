@@ -1,7 +1,10 @@
 //fetches user if authenticated in current session
 export const getUser = async () => {
   const res = await fetch('/api/auth', { method: 'GET' });
-  const user = await res.json();
+  let user = null;
+  if (res.ok) {
+    user = await res.json();
+  }
   return user;
 };
 
@@ -15,7 +18,10 @@ export const loginUser = async (username, password) => {
       'Content-Type': 'application/json',
     },
   });
-  const data = res.json();
+  let data = null;
+  if (res.ok) {
+    data = res.json();
+  } // handle error if !res.ok
   return data;
 };
 
@@ -29,7 +35,10 @@ export const registerUser = async (username, password) => {
       'Content-Type': 'application/json',
     },
   });
-  const data = res.json();
+  let data = null;
+  if (res.ok) {
+    data = res.json();
+  }
   return data;
 };
 

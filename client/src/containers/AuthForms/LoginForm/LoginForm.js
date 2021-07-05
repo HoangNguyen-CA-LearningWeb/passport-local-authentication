@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import styles from '../styles.module.css';
 import { loginUser } from '../../../actions';
+import { userContext } from '../../../context/userContext';
+import { Redirect } from 'react-router-dom';
 
 export default class LoginForm extends Component {
   state = {
@@ -8,17 +10,23 @@ export default class LoginForm extends Component {
     password: '',
   };
 
+  static contextType = userContext;
+
   handleSubmit = async (e) => {
     e.preventDefault();
 
     const data = await loginUser(this.state.username, this.state.password);
-    console.log(data);
+    this.context.setUser(data);
   };
 
   render() {
+    let redirect = null;
+    if (this.context.user) {
+      redirect = <Redirect to='/'></Redirect>;
+    }
     return (
-      <div className={styles.container}>
-        <h1>Login</h1>
+      <>
+        {redirect}
         <form onSubmit={this.handleSubmit}>
           <label className={styles.label}>
             Username:
@@ -41,7 +49,7 @@ export default class LoginForm extends Component {
             Submit
           </button>
         </form>
-      </div>
+      </>
     );
   }
 }

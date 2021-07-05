@@ -1,0 +1,40 @@
+.container {
+  height: 60px;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.link {
+  color: #bbb;
+  text-decoration: none;
+  text-transform: uppercase;
+  margin: 0 10px;
+  font-size: 1rem;
+  position: relative;
+  padding: 0.5em;
+  transition: 0.2s ease-out;
+}
+
+.link:hover {
+  color: #fff;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 0%;
+  height: 1px;
+  background-color: #bbb;
+  transition: 0.2s ease-out;
+  margin: auto;
+}
+
+.link:hover::after {
+  width: 100% !important;
+  background-color: white;
+}
