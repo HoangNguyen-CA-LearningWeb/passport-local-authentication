@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styles from '../styles.module.css';
+import { loginUser } from '../../../actions';
 
 export default class LoginForm extends Component {
   state = {
@@ -10,20 +11,7 @@ export default class LoginForm extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
 
-    const body = JSON.stringify({
-      username: this.state.username,
-      password: this.state.password,
-    });
-
-    const res = await fetch('/api/auth', {
-      method: 'POST',
-      body: body,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const data = await res.text();
+    const data = await loginUser(this.state.username, this.state.password);
     console.log(data);
   };
 

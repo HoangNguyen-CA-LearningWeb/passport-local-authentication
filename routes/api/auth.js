@@ -6,6 +6,7 @@ const { isAuth } = require('../../middleware');
 
 const AppError = require('../../AppError');
 
+//login route
 router.post(
   '/',
   wrapAsync(async (req, res, next) => {
@@ -24,10 +25,12 @@ router.post(
   })
 );
 
+//get authenticated user
 router.get('/', isAuth, (req, res) => {
   res.json(req.user);
 });
 
+//logout authenticated user
 router.post('/logout', isAuth, (req, res) => {
   req.logout();
   res.json({ message: 'Success.' });

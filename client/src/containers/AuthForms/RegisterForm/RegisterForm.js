@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styles from '../styles.module.css';
+import { registerUser } from '../../../actions';
 
 export default class RegisterForm extends Component {
   state = {
@@ -7,8 +8,11 @@ export default class RegisterForm extends Component {
     password: '',
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
+
+    const data = await registerUser(this.state.username, this.state.password);
+    console.log(data);
   };
 
   render() {
