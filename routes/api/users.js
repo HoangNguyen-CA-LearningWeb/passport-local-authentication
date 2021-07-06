@@ -17,6 +17,8 @@ router.post(
     const hash = await genPassword(password);
     const user = new User({ username, password: hash });
     const saved = await user.save();
+
+    saved.password = undefined; // dont send password to user
     res.json(saved);
   })
 );

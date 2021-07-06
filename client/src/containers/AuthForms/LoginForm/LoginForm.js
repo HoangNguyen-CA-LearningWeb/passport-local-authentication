@@ -1,55 +1,82 @@
-import React, { Component } from 'react';
+import { useContext, useState } from 'react';
 import styles from '../styles.module.css';
 import { loginUser } from '../../../actions';
 import { userContext } from '../../../context/userContext';
 import { Redirect } from 'react-router-dom';
 
-export default class LoginForm extends Component {
-  state = {
-    username: '',
-    password: '',
-  };
+import { useForm } from 'react-hook-form';
+const LoginForm = () => {
+  const [error, setError] = useState(null);
 
-  static contextType = userContext;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: 'onBlur',
+    defaultValues: {
+      password: '',
+      username: '',
+    },
+  });
 
-  handleSubmit = async (e) => {
-    e.preventDefault();
+  const { user, setUser } = useContext(userContext);
 
-    const data = await loginUser(this.state.username, this.state.password);
-    this.context.setUser(data);
-  };
-
-  render() {
-    let redirect = null;
-    if (this.context.user) {
-      redirect = <Redirect to='/'></Redirect>;
+  const onSubmit = async (data) => {
+    try {
+      const user = await loginUser(data.username, data.password);
+      setUser(user);
+    } catch (e) {
+      setError(e.message);
     }
-    return (
-      <>
-        {redirect}
-        <form onSubmit={this.handleSubmit}>
-          <label className={styles.label}>
-            Username:
-            <input
-              value={this.state.username}
-              onChange={(e) => this.setState({ username: e.target.value })}
-              className={styles.input}
-            ></input>
-          </label>
-          <label className={styles.label}>
-            Password:
-            <input
-              value={this.state.password}
-              onChange={(e) => this.setState({ password: e.target.value })}
-              className={styles.input}
-            ></input>
-          </label>
+  };
 
-          <button className={styles.button} type='submit'>
-            Submit
-          </button>
-        </form>
-      </>
-    );
+  let redirect = null;
+  if (user) {
+    redirect = <Redirect to='/'></Redirect>;
   }
-}
+
+  return (
+    <>
+      {redirect}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {error && <div className={styles.serverError}>{error}</div>}
+        <label className={styles.label}>
+          Username:
+          <input
+            className={styles.input}
+            {...register('username', {
+              required: 'username field is required.',
+            })}
+          ></input>
+        </label>
+        <p className={styles.errorMessage}>{errors.username?.message}</p>
+
+        <label className={styles.label}>
+          Password:
+          <input
+            className={styles.input}
+            {...register('password', {
+              required: 'password field is required.',
+              minLength: {
+                value: 3,
+                message: 'password must have a minimum length of 3.',
+              },
+              maxLength: {
+                value: 15,
+                message: 'password must have a maximum length of 15.',
+              },
+            })}
+          ></input>
+        </label>
+        <p className={styles.errorMessage}>{errors.password?.message}</p>
+
+        <button className={styles.button} type='submit'>
+          Submit
+        </button>
+      </form>
+    </>
+  );
+};
+
+export default LoginForm;

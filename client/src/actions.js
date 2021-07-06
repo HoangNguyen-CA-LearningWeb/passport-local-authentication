@@ -1,11 +1,11 @@
 //fetches user if authenticated in current session
 export const getUser = async () => {
   const res = await fetch('/api/auth', { method: 'GET' });
-  let user = null;
+  let data = await res.json();
   if (res.ok) {
-    user = await res.json();
+    return data;
   }
-  return user;
+  return null;
 };
 
 export const loginUser = async (username, password) => {
@@ -18,11 +18,13 @@ export const loginUser = async (username, password) => {
       'Content-Type': 'application/json',
     },
   });
-  let data = null;
+
+  let data = await res.json();
   if (res.ok) {
-    data = res.json();
-  } // handle error if !res.ok
-  return data;
+    return data;
+  } else {
+    throw new Error(data.error);
+  }
 };
 
 export const registerUser = async (username, password) => {
@@ -35,11 +37,12 @@ export const registerUser = async (username, password) => {
       'Content-Type': 'application/json',
     },
   });
-  let data = null;
+  let data = await res.json();
   if (res.ok) {
-    data = res.json();
+    return data;
+  } else {
+    throw new Error(data.error);
   }
-  return data;
 };
 
 export const logoutUser = async () => {
